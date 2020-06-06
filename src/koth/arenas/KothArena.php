@@ -51,17 +51,17 @@ class KothArena
 	   
     
 
-      foreach($spawns as $val => $pos){
-				$strPos = explode(':', $pos);
-	      if(!$this->plugin->getServer()->isLevelLoaded($strPos[3])){
-	      Server::getInstance()->loadLevel($strPos[3]);
-	      }
+        foreach($spawns as $val => $pos){
+            $strPos = explode(':', $pos);
+            if(!$this->plugin->getServer()->isLevelLoaded($strPos[3])){
+                Server::getInstance()->loadLevel($strPos[3]);
+            }
 
-				$this->spawns[] = new Position(intval($strPos[0]), intval($strPos[1]), intval($strPos[2]), $main->getServer()->getLevelByName($strPos[3]));
+            $this->spawns[] = new Position(intval($strPos[0]), intval($strPos[1]), intval($strPos[2]), $main->getServer()->getLevelByName($strPos[3]));
 
         }
 
-       $l = explode(":",$capture["p1"]);
+        $l = explode(":",$capture["p1"]);
 
         $this->p1 = new Position($l[0],$l[1],$l[2],$main->getServer()->getLevelByName($l[3]));
 
@@ -75,7 +75,7 @@ class KothArena
 
         
 
-       $l = $player->getPosition();
+        $l = $player->getPosition();
 
         $x = $l->getX();
 
@@ -104,6 +104,7 @@ class KothArena
         return ($minx <= $x && $x <= $maxx && $minz <= $z && $z <= $maxz && $miny <= $y && $y <= $maxy);
 
    }
+
    public function startGame(){
 
         $task = new GameTimer($this->plugin,$this);
@@ -139,20 +140,21 @@ class KothArena
         }
 
     }
+
     public function teleportFinish(Player $player){
         if($this->plugin->getConfig()->get("teleport-type") === "default"){
             $spawn = $this->plugin->getServer()->getDefaultLevel()->getSpawnLocation();
         }elseif($this->plugin->getConfig()->get("teleport-type") === "world-spawn"){
-                $spawn = $event->getPlayer()->getLevel()->getSpawnLocation();
-                }elseif($this->plugin->getConfig()->get("teleport-type") === "cords"){
-                        $cords = explode(", ", $this->plugin->getConfig()->get("coordinates"));
-                        $x = (int)$cords[0];
-                        $y = (int)$cords[1];
-                        $z = (int)$cords[2];
+            $spawn = $event->getPlayer()->getLevel()->getSpawnLocation();
+        }elseif($this->plugin->getConfig()->get("teleport-type") === "cords"){
+            $cords = explode(", ", $this->plugin->getConfig()->get("coordinates"));
+            $x = (int)$cords[0];
+            $y = (int)$cords[1];
+            $z = (int)$cords[2];
             $spawn = new Position($x, $y, $z, $this->plugin->getServer()->getLevelByName($this->plugin->getConfig()->get("world")));
 	}
         $player->teleport($spawn);
-	  //todo add error messages.
+        //todo add error messages.
         
     
     }
@@ -174,12 +176,14 @@ class KothArena
         $this->players = [];
 
         $this->running = false;
-	     $this->plugin->started = false;
-	    $this->plugin->stopped = true;
+        $this->plugin->started = false;
+        $this->plugin->stopped = true;
 
         $timer = $this->timer;
 
-        if ($timer instanceof Task && !$timer->getHandler()->isCancelled()) $timer->getHandler()->cancel();
+        if ($timer instanceof Task && !$timer->getHandler()->isCancelled()) {
+            $timer->getHandler()->cancel();
+        }
 
         $this->timer = null;
 
@@ -233,8 +237,8 @@ class KothArena
         $this->timer = $task;
 
         $this->running = true;
-		$this->plugin->started = true;
-		$this->plugin->stopped = false;
+        $this->plugin->started = true;
+        $this->plugin->stopped = false;
 
     }
 
@@ -247,15 +251,14 @@ class KothArena
         $msg = str_replace("{player}", $player->getName(), $msg);
 	$msg = str_replace("{faction}", $this->plugin->getFaction($player), $msg);    
         $msg = $prefix.$msg;
-if($this->plugin->msg->get("discord-support")){
-        $this->plugin->discord->sendToDiscord(KothLanguage::getMessage("KOTH_ENDED_DISCORD", [
-            "{winner}" => $player->getName(),
-            "{line}" => "\n",
-            "{faction}" => $this->plugin->getFaction($player)
-
-        ]), $this->plugin->msg->get("webhook-url"), $this->plugin->msg->get("bot-displayname"));
+        if($this->plugin->msg->get("discord-support")){
+            $this->plugin->discord->sendToDiscord(KothLanguage::getMessage("KOTH_ENDED_DISCORD", [
+                "{winner}" => $player->getName(),
+                "{line}" => "\n",
+                "{faction}" => $this->plugin->getFaction($player)
+            ]), $this->plugin->msg->get("webhook-url"), $this->plugin->msg->get("bot-displayname"));
         
-}
+        }
         $factionMode = ($this->plugin->fac instanceof FactionMain ? " " . KothLanguage::getMessage("KOTH_WON_FACTIONMODE", [
         "{faction}" => $this->plugin->getFaction($player),
         "{player}" => $player->getName()]) : "");
@@ -276,17 +279,17 @@ if($this->plugin->msg->get("discord-support")){
       
 
         if($this->plugin->kothplayer->isInGame($player)){
-		 $this->teleportFinish($player);
+            $this->teleportFinish($player);
 
             $this->plugin->kothplayer->setInGame($player, false);
-         }
-			if($this->plugin->msg->get("discord-support")){
+        }
+        if($this->plugin->msg->get("discord-support")){
 
             $this->plugin->discord->sendToDiscord(KothLanguage::getMessage("KOTH_PLAYER_QUIT", [ 
-            "{player}" => $player->getName()
+                "{player}" => $player->getName()
             ]), $this->plugin->msg->get("webhook-url"), $this->plugin->msg->get("bot-displayname"));
                
-    }
+        }
     }
 
 
@@ -300,49 +303,49 @@ if($this->plugin->msg->get("discord-support")){
        
 
     
-$this->sendTip(KothLanguage::getMessage("CAPTURING_POINT_TIP", [
-    "{percent}" => $percent,
-    "{player}" => $p->getName()
-]));
+        $this->sendTip(KothLanguage::getMessage("CAPTURING_POINT_TIP", [
+            "{percent}" => $percent,
+            "{player}" => $p->getName()
+        ]));
      
 
- if($percent == 1){
-$this->addTitlePercentage($p, $percent);
+        if($percent == 1){
+            $this->addTitlePercentage($p, $percent);
   
 
- }
+        }
 
-    if($percent == 25){
+        if($percent == 25){
 
       
-       $this->addTitlePercentage($p, $percent);
-    }
+            $this->addTitlePercentage($p, $percent);
+        }
 
-    if($percent == 50){
+        if($percent == 50){
 
     
-    $this->addTitlePercentage($p, $percent);
-    }
+            $this->addTitlePercentage($p, $percent);
+        }
 
-    if($percent == 75){
+        if($percent == 75){
 
       
-      $this->addTitlePercentage($p, $percent);
-    }
+            $this->addTitlePercentage($p, $percent);
+        }
 
-    if($percent > 94){
+        if($percent > 94){
 
      
-      $this->addTitlePercentage($p, $percent);
+            $this->addTitlePercentage($p, $percent);
       
-    }
+        }
     }
 
     public function addTitlePercentage(Player $player, $percent){
         Server::getInstance()->broadcastMessage(KothLanguage::getMessage("CAPTURING_POINT_MESSAGE", [
             "{percent}" => $percent,
             "{player}" => $player->getName()
-            ]));
+        ]));
     }
 
     public function endGame(){
